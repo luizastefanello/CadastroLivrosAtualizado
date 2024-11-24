@@ -17,7 +17,7 @@ public class CadastroController {
         this.context = context;
     }
 
-    public String salvarLivro(String nomeLivro, String autorLivro, String generoLivro) {
+    public String salvarLivro(String nomeLivro, String autorLivro, String editora, String descrLivro, String anoPubli, String generoLivro) {
         try {
             if (TextUtils.isEmpty(nomeLivro)) {
                 return "Informe o NOME do livro";
@@ -25,20 +25,38 @@ public class CadastroController {
             if (TextUtils.isEmpty(autorLivro)) {
                 return "Informe o AUTOR do livro";
             }
+            if (TextUtils.isEmpty(editora)) {
+                return "Informe a EDITORA do livro";
+            }
+            if (TextUtils.isEmpty(descrLivro)) {
+                return "Informe a DESCRIÇÃO do livro";
+            }
+            if (TextUtils.isEmpty(anoPubli)) {
+                return "Informe o ANO DE PUBLICAÇÃO do livro";
+            }
             if (TextUtils.isEmpty(generoLivro)) {
                 return "Informe o GÊNERO do livro";
             }
 
+
             Livro livro = new Livro();
             livro.setNomeLivro(nomeLivro);
             livro.setAutor(autorLivro);
+            livro.setEditora(editora);
+            livro.setDescrLivro(descrLivro);
+            livro.setAnoPubli(Integer.parseInt(anoPubli));
             livro.setGenero(generoLivro);
 
             long id = CadastroDao.getInstance(context).insert(livro);
-            return "Livro cadastrado com sucesso!";
+            if(id>0) {
+                return "Livro cadastrado com sucesso!";
+            }else {
+                return "Não foi possível gravar os dados do livro." +
+                        " Solicite suporte técnico.";
+            }
 
         } catch (Exception ex) {
-            Log.e("Unipar",
+            Log.e("Cadastro",
                     "Erro salvarLivro(): " + ex.getMessage());
         }
         return "Erro ao gravar dados do Livro. " +

@@ -1,6 +1,7 @@
 package com.example.cadastrolivros.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,8 +35,12 @@ public class HomeActivity extends AppCompatActivity {
     private CadastroController controller;
     private RecyclerView rvLivros;
     private View viewCadastro;
-    private EditText edNome, edAutor, edGenero;
+    private EditText edNome, edAutor, edGenero, edDescricao, edAnoPubli, edEditora;
     private AlertDialog dialog;
+    private Button btInfoLivro;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,17 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         atualizarListaLivros();
+
+        btInfoLivro = findViewById(R.id.btInfoLivro);
+        btInfoLivro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, LivroActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void atualizarListaLivros(){
@@ -76,6 +92,10 @@ public class HomeActivity extends AppCompatActivity {
         edNome = viewCadastro.findViewById(R.id.edNome);
         edAutor = viewCadastro.findViewById(R.id.edAutor);
         edGenero = viewCadastro.findViewById(R.id.edGenero);
+        edDescricao = viewCadastro.findViewById(R.id.edDescricao);
+        edAnoPubli = viewCadastro.findViewById(R.id.edAnoPubli);
+        edEditora = viewCadastro.findViewById(R.id.edEditora);
+
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -106,10 +126,11 @@ public class HomeActivity extends AppCompatActivity {
                 });
             }
         });
+        dialog.show();
     }
 
     private void salvarDados(){
-        String retorno = controller.salvarLivro(edNome.getText().toString(), edAutor.getText().toString(), edGenero.getText().toString());
+        String retorno = controller.salvarLivro(edNome.getText().toString(), edAutor.getText().toString(), edEditora.getText().toString(), edDescricao.getText().toString(), edAnoPubli.getText().toString(), edGenero.getText().toString());
 
         if(retorno.contains("NOME")){
             edNome.setError(retorno);
@@ -121,6 +142,21 @@ public class HomeActivity extends AppCompatActivity {
             edAutor.requestFocus();
             return;
         }
+        if(retorno.contains("EDITORA")) {
+            edEditora.setError(retorno);
+            edEditora.requestFocus();
+            return;
+        }
+        if(retorno.contains("DESCRIÇÃO")) {
+            edDescricao.setError(retorno);
+            edDescricao.requestFocus();
+            return;
+        }
+        if(retorno.contains("ANO")) {
+            edAnoPubli.setError(retorno);
+            edAnoPubli.requestFocus();
+            return;
+        }
         if(retorno.contains("GÊNERO")){
             edGenero.setError(retorno);
             edGenero.requestFocus();
@@ -128,11 +164,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
-        if(retorno.contains("GÊNERO")){
-            edGenero.setError(retorno);
-            edGenero.requestFocus();
-            return;
-        }
+
 
         if(retorno.contains("sucesso")){
             atualizarListaLivros();
@@ -163,4 +195,5 @@ public class HomeActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
 }
